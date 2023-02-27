@@ -35,8 +35,7 @@ app.set("views", templatePath);
 //template engine route
 app.get("/",(req,res)=>{
   res.render('index',{
-    title:"Dashboard",
-    heading:"Dashboard"
+    title:"Dashboard"
   })
 })
 app.get("/about", (req, res) => {
