@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{{>head}}
+
+<body>
+    {{>header}}
+    <div class="maindiv">
+        <div class="innerdiv1">
+            <form class="temp_class">
+                <input type="text" id="cityName" placeholder="Enter your city name" autocomplete="off">
+                <input type="submit" value="search" id="submitBtn">
+            </form>
+        </div>
+
+        <div class="innerdiv2" id="innerdiv2">
+            <p id="city_name">City name here</p>
+            <div class="data_hide" style="display: flex;align-items: center;">
+                <p id="temp" style="margin-right:10px;">&ThinSpace;<span> 0</span><sup>o</sup>C</p>
+                <p id="temp_status"><i class="fa fa-sun-o" aria-hidden="true" style="color:#eccc68;font-size:24px;"></i>
+                </p>
+            </div>
+        </div>
+    </div>
+    {{>footer}}
+    {{!--
+    <script src="src/main.js"></script> --}}
+
+    <script>
+        const submitBtn = document.getElementById('submitBtn')
+        const cityName = document.getElementById('cityName')
+        const city_name = document.getElementById('city_name')
+        const temp = document.getElementById('temp')
+        const temp_status = document.getElementById('temp_status')
+        const getInfo = async (e) => {
+            e.preventDefault()
+            let cityVal = cityName.value;
+            if (cityVal === "") {
+                city_name.innerText = 'Please enter city name'
+                temp.innerHTML = '&ThinSpace;<span> 0</span><sup>o</sup>C';
+                temp_status.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true" style="color:#eccc68;font-size:24px;"></i>'
+            }
+            else {
+                try {
+                    let url = `https://api.openweathermap.org/data/2.5/weather?q=${cityVal}&appid=039b0b21776bac17fafd53699b9f107a`
+                    const response = await fetch(url)
+                    const data = await response.json()
+                    city_name.innerText = data.name;
+                    temp.innerText = data.main.temp;
+
+                    let tempMood = data.weather[0].main
+
+                    if (tempMood === "Clear") {
+                        temp_status.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true" style="color:#eccc68;font-size:24px;"></i>';
+                    }
+                    else if (tempMood === "Clouds") {
+                        temp_status.innerHTML = '<i class="fa fa-cloud" aria-hidden="true" style="color:#f1f2f6;font-size:24px;"></i>';
+                    }
+                    else if (tempMood === "Rain") {
+                        temp_status.innerHTML = '<i class="fa-solid fa-cloud-rain" aria-hidden="true" style="color:#a4b0be;font-size:24px;"></i>';
+                    }
+                    else {
+                        temp_status.innerHTML = '<i class="fa fa-cloud" aria-hidden="true" style="color:#f1f2f6;font-size:24px;"></i>';
+                    }
+                }
+                catch {
+                    city_name.innerText = 'Please enter correct city name';
+                    temp.innerHTML = '&ThinSpace;<span> 0</span><sup>o</sup>C';
+                    temp_status.innerHTML = '<i class="fa fa-sun-o" aria-hidden="true" style="color:#eccc68;font-size:24px;"></i>'
+                }
+
+            }
+
+
+
+        }
+
+
+        submitBtn.addEventListener('click', getInfo)
+    </script>
+
+</body>
+
+</html>

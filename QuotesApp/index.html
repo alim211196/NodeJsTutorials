@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css"
+        integrity="sha512-PgQMlq+nqFLV4ylk1gwUOgm6CtIIXkKwaIHp/PAIWHzig/lKZSEGKEysh0TCVbHJXCLN7WetD8TFecIky75ZfQ=="
+        crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet" />
+
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            /* font-family: "Jost", sans-serif; */
+            font-family: "Quicksand", sans-serif;
+        }
+
+        body {
+            background: #f3f2ef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .container {
+            background: #007fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            width: 63vw;
+            height: 70vh;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.2rem 3rem rgba(0, 0, 0, 0.2);
+        }
+
+        .div1 {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .div2 {
+            padding: 40px 10px;
+        }
+
+        .div3 {
+            bottom: 0;
+            /* top: 0; */
+            position: fixed;
+            background: #2BA8E0;
+            width: 100%;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* padding: 8px; */
+            height: 5rem;
+        }
+
+        .img {
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+        }
+
+        html,
+        body {
+            font-size: 62.5%;
+            height: 100%;
+        }
+
+        html {
+            background: #eee;
+        }
+
+        .box {
+            width: 45vw;
+            height: 56vh;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.2rem 3rem rgba(0, 0, 0, 0.2);
+            background: #fff;
+            position: relative;
+            overflow: hidden;
+            transform: translate3d(0, 0, 0);
+            min-width: 20rem;
+            min-height: 35rem;
+            padding: 1rem;
+        }
+
+        #quotes {
+            font-size: 24px;
+            color: #2BA8E0;
+        }
+
+        #author {
+            font-size: 14px;
+            text-align: end;
+            margin-top: 2rem;
+        }
+
+        #newQ {
+            font-size: 18px;
+            /* text-align: center; */
+            color: white;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            .box {
+                width: 90vw;
+                height: 80vh;
+            }
+        }
+
+        @media (max-height: 500px) {
+            .box {
+                height: 80vh;
+            }
+        }
+
+        body>span {
+            width: 100vw;
+            text-align: center;
+            color: grey;
+        }
+    </style>
+    <title>Quotes App</title>
+</head>
+
+<body class="body">
+    <div class="container">
+        <div class="box">
+            <div class="div1">
+                <img id="tweet" src="./download.jpg" alt="tweete" class="img">
+            </div>
+            <div class="div2">
+                <div id="quotes"></div>
+                <div id="author"></div>
+            </div>
+            <div class="div3">
+                <label id="newQ">new Quotes</label>
+
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const quotes = document.getElementById('quotes')
+        const author = document.getElementById('author')
+        const newQ = document.getElementById('newQ')
+        const tweet = document.getElementById('tweet')
+        let realData = "";
+        let quotesData = ""
+
+        const tweetNow = () => {
+            const url = `https://twitter.com/intent/tweet?text=${quotesData.text}`
+            window.open(url)
+        }
+        const getNewQuotes = () => {
+            let rnum = Math.floor(Math.random() * 20)
+            quotesData = realData[rnum]
+            quotes.innerHTML = `${quotesData.text}`
+            quotesData.author == null ?
+                (author.innerHTML = "Unknown")
+                : (author.innerHTML = `By ${quotesData.author}`)
+
+        }
+        const getQuotes = async () => {
+            const api = "https://type.fit/api/quotes";
+            try {
+                let data = await fetch(api)
+                realData = await data.json();
+                getNewQuotes()
+            } catch (error) { }
+        }
+
+        newQ.addEventListener('click', getNewQuotes)
+        tweet.addEventListener('click', tweetNow)
+        getQuotes();
+    </script>
+</body>
+
+</html>

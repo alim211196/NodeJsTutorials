@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Alim Mohammad",
+    "username": "alim",
+    "email": "Alim.Mohammad@ascendtek.com",
+    "position": "UI Developer",
+    "phone": 8180036208,
+    "city": "malkapur",
+    "pincode": 443101
+  },
+  {
+    "id": 2,
+    "name": "Sohail Shaikh",
+    "username": "sohail",
+    "email": "Sohail.Shaikh@ascendtek.com",
+    "position": "Nodejs Developer",
+    "phone": 9876543210,
+    "city": "pune",
+    "pincode": 411028
+  },
+  {
+    "id": 3,
+    "name": "Arshad Sayyed",
+    "username": "sayyed",
+    "email": "Arshad.Sayyed@ascendtek.com",
+    "position": "Team lead",
+    "phone": 9876543211,
+    "city": "khamgaon",
+    "pincode": 444303
+  },
+  {
+    "id": 4,
+    "name": "Arbaz Shaikh",
+    "username": "arbaz",
+    "email": "Arbaz.Shaikh@ascendtek.com",
+    "position": "Tester",
+    "phone": 9876543212,
+    "city": "pune",
+    "pincode": 411028
+},
+{
+    "id": 5,
+    "name": "Mohammad Yunus",
+    "username": "yunus",
+    "email": "Mohammad.Yunus@ascendtek.com",
+    "position": "UI Developer",
+    "phone": 9876543213,
+    "city": "khamgaon",
+    "pincode": 444303
+}
+]
