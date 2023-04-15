@@ -30,6 +30,14 @@ const studentSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  course: {
+    type: String,
+    required: true,
+  },
+  course_year: {
+    type: String,
+    required: true,
+  },
   address: {
     type: String,
     required: true,
