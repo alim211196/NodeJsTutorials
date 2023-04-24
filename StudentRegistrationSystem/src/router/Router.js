@@ -3,6 +3,7 @@ const router = new express.Router();
 const Students = require("../models/students");
 const User = require("../models/user");
 const Contact = require("../models/contact");
+const { courses } = require("../../student-courses");
 
 //////////////////////////////student's api/////////////////////////////////
 
@@ -42,21 +43,22 @@ router.get("/students/get-student/:id", async (req, res) => {
   }
 });
 
-
-//update student 
-router.patch("/students/update-student/:id",async(req,res)=>{
+//update student
+router.patch("/students/update-student/:id", async (req, res) => {
   try {
     const _id = req.params.id;
-    const result = await Students.findByIdAndUpdate(_id,req.body,{new:true});
+    const result = await Students.findByIdAndUpdate(_id, req.body, {
+      new: true,
+    });
     if (!result) {
       return res.status(404).send();
     } else {
       res.status(200).send("Record updated successfully.");
     }
   } catch (err) {
-     res.status(500).send(err);
+    res.status(500).send(err);
   }
-})
+});
 
 //delete student
 router.delete("/students/delete-student/:id", async (req, res) => {
@@ -94,6 +96,14 @@ router.get("/students/contact/get-comments", async (req, res) => {
   }
 });
 
+router.get("/students/courses", async (req, res) => {
+  try {
+    await res.status(200).json(courses);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 //delete comment
 router.delete("/students/contact/delete-comment/:id", async (req, res) => {
   try {
@@ -122,7 +132,6 @@ router.post("/user/register", async (req, res) => {
   }
 });
 
-
 //get user by id
 router.get("/user/get-user/:id", async (req, res) => {
   try {
@@ -137,7 +146,6 @@ router.get("/user/get-user/:id", async (req, res) => {
     res.status(500).send(err);
   }
 });
-
 
 //update user
 router.patch("/user/update-user/:id", async (req, res) => {
@@ -155,7 +163,6 @@ router.patch("/user/update-user/:id", async (req, res) => {
     res.status(500).send("Internal server error.");
   }
 });
-
 
 //update user password
 router.patch("/user/update-password/:id", async (req, res) => {
@@ -186,7 +193,6 @@ router.patch("/user/update-password/:id", async (req, res) => {
   }
 });
 
-
 //create login api
 router.post("/user/login", async (req, res) => {
   try {
@@ -206,7 +212,6 @@ router.post("/user/login", async (req, res) => {
   }
 });
 
-
 //create forgot password api
 router.post("/user/forgot-password", async (req, res) => {
   try {
@@ -223,7 +228,6 @@ router.post("/user/forgot-password", async (req, res) => {
     res.status(500).send("Invalid email address");
   }
 });
-
 
 //create reset password api
 router.patch("/user/reset-password/:id", async (req, res) => {
@@ -242,5 +246,83 @@ router.patch("/user/reset-password/:id", async (req, res) => {
   }
 });
 
+const getTotalYears = (courses) => {
+  let totalYears = 0;
+
+  courses.forEach((course) => {
+    totalYears += course.years.length;
+  });
+
+  return totalYears;
+};
+
+const totalYears = getTotalYears(courses);
+const totalCourses = courses.length;
+
+//get length of students,teachers,courses
+router.get("/resource-quantity", async (req, res) => {
+  try {
+    const noOfStudents = await Students.countDocuments();
+    const noOfTeacher = await User.countDocuments();
+    const noOfCourses = totalCourses;
+    const noOfBatches = totalYears;
+    res.status(200).send({
+      noOfStudents,
+      noOfTeacher,
+      noOfCourses,
+      noOfBatches,
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.get("/get-recent-entry", async (req, res) => {
+  try {
+    const recentTeachers = await User.find().sort({ _id: -1 }).limit(5);
+    const recentStudents = await Students.find().sort({ _id: -1 }).limit(5);
+    const recentMessages = await Contact.find().sort({ _id: -1 }).limit(5);
+    res.status(200).send({
+      recentTeachers,
+      recentStudents,
+      recentMessages,
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+router.get("/get-birthday", async (req, res) => {
+  try {
+    const today = new Date();
+    const month = today.getMonth() + 1;
+    const day = today.getDate();
+
+    const studentsBirthday = await Students.find({
+      $expr: {
+        $and: [
+          { $eq: [{ $month: "$dob" }, month] },
+          { $eq: [{ $dayOfMonth: "$dob" }, day] },
+        ],
+      },
+    });
+
+    const teachersBirthday = await User.find({
+      $expr: {
+        $and: [
+          { $eq: [{ $month: "$dob" }, month] },
+          { $eq: [{ $dayOfMonth: "$dob" }, day] },
+        ],
+      },
+    });
+
+    res.status(200).send({
+      studentsBirthday,
+      teachersBirthday,
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 module.exports = router;

@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const contactSchema = mongoose.Schema({
-  fullName: {
+  fullname: {
     type: String,
     required: true,
     minlength: 3,
@@ -22,9 +22,25 @@ const contactSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  gender: {
+    type: String,
+    required: true,
+  },
+  course: {
+    type: String,
+    required: true,
+  },
+  course_year: {
+    type: String,
+    required: true,
+  },
   comment: {
     type: String,
     required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 

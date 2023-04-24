@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const studentSchema = mongoose.Schema({
-  fullName: {
+  fullname: {
     type: String,
     required: true,
     minlength: 3,
@@ -59,10 +59,15 @@ const studentSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  role: {
+    type: String,
+    required: true,
+  },
   date: {
     type: Date,
     default: Date.now,
   },
+  profileImage: { type: String, default: null },
 });
 
 

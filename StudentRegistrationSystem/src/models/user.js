@@ -1,12 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const UserSchema = mongoose.Schema({
-  firstName: {
-    type: String,
-    required: true,
-    minlength: 3,
-  },
-  lastName: {
+  fullname: {
     type: String,
     required: true,
     minlength: 3,
@@ -21,12 +16,63 @@ const UserSchema = mongoose.Schema({
       }
     },
   },
+  phone: {
+    type: Number,
+    min: 10,
+    required: true,
+    unique: true,
+  },
+  dob: {
+    type: Date,
+    required: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  course: {
+    type: String,
+    required: true,
+  },
+  course_year: {
+    type: String,
+    required: true,
+  },
+  address: {
+    type: String,
+    required: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  pinCode: {
+    type: Number,
+    required: true,
+    min: 6,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
   password: {
     type: String,
     required: true,
     minlength: [8, "minimum 8 letters"],
   },
-  profileImage: { type: String,default:null},
+  role: {
+    type: String,
+    required: true,
+  },
+  profileImage: { type: String, default: null },
 });
 
 const User = new mongoose.model("User", UserSchema);
