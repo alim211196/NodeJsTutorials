@@ -22,6 +22,11 @@ const studentSchema = mongoose.Schema({
     required: true,
     unique: true,
   },
+  roll_no: {
+    type: Number,
+    min: 1,
+    required: true,
+  },
   dob: {
     type: Date,
     required: true,

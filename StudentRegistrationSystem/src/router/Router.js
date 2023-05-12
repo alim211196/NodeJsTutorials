@@ -4,6 +4,7 @@ const Students = require("../models/students");
 const User = require("../models/user");
 const Contact = require("../models/contact");
 const { courses } = require("../../student-courses");
+const Attendance = require("../models/attendance");
 
 //////////////////////////////student's api/////////////////////////////////
 
@@ -14,7 +15,7 @@ router.post("/students/add", async (req, res) => {
     const result = await student.save();
     res.status(201).send(result);
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -24,7 +25,7 @@ router.get("/students/get-students", async (req, res) => {
     const result = await Students.find();
     res.status(200).send(result);
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -34,12 +35,12 @@ router.get("/students/get-student/:id", async (req, res) => {
     const _id = req.params.id;
     const result = await Students.findById(_id);
     if (!result) {
-      return res.status(404).send();
+      return res.status(404).send("User not found.");
     } else {
       res.status(200).send(result);
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -51,12 +52,12 @@ router.patch("/students/update-student/:id", async (req, res) => {
       new: true,
     });
     if (!result) {
-      return res.status(404).send();
+      return res.status(404).send("User not found.");
     } else {
       res.status(200).send("Record updated successfully.");
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -66,12 +67,21 @@ router.delete("/students/delete-student/:id", async (req, res) => {
     const _id = req.params.id;
     const result = await Students.findByIdAndDelete(_id);
     if (!result) {
-      return res.status(404).send();
+      return res.status(404).send("User not found.");
     } else {
       res.status(200).send("Deleted Successfully.");
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
+  }
+});
+
+//get student's courses
+router.get("/students/courses", async (req, res) => {
+  try {
+    await res.status(200).json(courses);
+  } catch (err) {
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -82,7 +92,7 @@ router.post("/students/contact/add", async (req, res) => {
     await contact.save();
     res.status(201).send("Thank you for your valuable feedback.");
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -92,15 +102,7 @@ router.get("/students/contact/get-comments", async (req, res) => {
     const result = await Contact.find();
     res.status(200).send(result);
   } catch (err) {
-    res.status(500).send(err);
-  }
-});
-
-router.get("/students/courses", async (req, res) => {
-  try {
-    await res.status(200).json(courses);
-  } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -110,12 +112,12 @@ router.delete("/students/contact/delete-comment/:id", async (req, res) => {
     const _id = req.params.id;
     const result = await Contact.findByIdAndDelete(_id);
     if (!result) {
-      return res.status(404).send();
+      return res.status(404).send("User not found.");
     } else {
       res.status(200).send("Deleted Successfully.");
     }
   } catch (err) {
-    res.status(500).send("Not Deleted");
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -128,7 +130,7 @@ router.post("/user/register", async (req, res) => {
     const result = await user.save();
     res.status(201).send(result);
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -138,12 +140,12 @@ router.get("/user/get-user/:id", async (req, res) => {
     const _id = req.params.id;
     const result = await User.findById(_id);
     if (!result) {
-      return res.status(404).send();
+      return res.status(404).send("User not found.");
     } else {
       res.status(200).send(result);
     }
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -155,7 +157,7 @@ router.patch("/user/update-user/:id", async (req, res) => {
       new: true,
     });
     if (!result) {
-      return res.status(404).send("Not updated.");
+      return res.status(404).send("User not found.");
     } else {
       res.status(200).send("Profile updated successfully.");
     }
@@ -198,17 +200,16 @@ router.post("/user/login", async (req, res) => {
   try {
     const email = req.body.email;
     const password = req.body.password;
-
     const userEmail = await User.findOne({ email: email });
     const userId = userEmail._id;
     const Id = userId.toString();
     if (userEmail.password === password) {
       res.status(201).send(Id);
     } else {
-      res.status(404).send("Invalid password");
+      res.status(404).send("User not found.");
     }
   } catch (err) {
-    res.status(500).send("Invalid login details");
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -222,10 +223,10 @@ router.post("/user/forgot-password", async (req, res) => {
     if (userEmail.email === email) {
       res.status(201).send(Id);
     } else {
-      res.status(404).send("Invalid email address");
+      res.status(404).send("User not found.");
     }
   } catch (err) {
-    res.status(500).send("Invalid email address");
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -237,12 +238,12 @@ router.patch("/user/reset-password/:id", async (req, res) => {
       new: true,
     });
     if (!result) {
-      return res.status(404).send();
+      res.status(404).send("User not found.");
     } else {
       res.status(200).send("Password Updated Successfully.");
     }
   } catch (err) {
-    res.status(500).send("Not Updated");
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -273,7 +274,7 @@ router.get("/resource-quantity", async (req, res) => {
       noOfBatches,
     });
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -288,7 +289,7 @@ router.get("/get-recent-entry", async (req, res) => {
       recentMessages,
     });
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
   }
 });
 
@@ -321,7 +322,84 @@ router.get("/get-birthday", async (req, res) => {
       teachersBirthday,
     });
   } catch (err) {
-    res.status(500).send(err);
+    res.status(500).send("Internal server error.");
+  }
+});
+//////////////////////attendance/////////////////////
+//create attendance api
+router.post("/students/add-attendance", async (req, res) => {
+  const attendance = new Attendance(req.body);
+  try {
+    const result = await attendance.save();
+    res.status(201).json(result);
+  } catch (error) {
+    res.status(500).json("Internal server error");
+  }
+});
+//get attendance api
+router.get("/students/get-attendance", async (req, res) => {
+  try {
+    const result = await Attendance.find();
+    res.status(200).send(result);
+  } catch (err) {
+    res.status(500).send("Internal server error.");
+  }
+});
+
+//update attendance
+router.patch("/students/update-attendance/:id", async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const { attendanceId, attendanceValue } = req.body;
+
+    // Find the attendance object in the array that matches the attendanceId
+    const attendanceDoc = await Attendance.findById(_id);
+    if (!attendanceDoc) {
+      return res.status(404).send("User not found.");
+    }
+
+    const attendanceIndex = attendanceDoc.attendance.findIndex(
+      (attendance) => attendance._id === attendanceId
+    );
+    if (attendanceIndex === -1) {
+      return res.status(404).send("Attendance not found.");
+    }
+
+    // Update the attendance value in the document
+    attendanceDoc.attendance[attendanceIndex].attendance = attendanceValue;
+
+    // Save the updated document using findByIdAndUpdate()
+    const updatedDoc = await Attendance.findByIdAndUpdate(
+      _id,
+      { attendance: attendanceDoc.attendance },
+      { new: true }
+    );
+
+    if (!updatedDoc) {
+      return res.status(404).send("User not found.");
+    } else {
+      res.status(200).send("Attendance updated successfully.");
+    }
+  } catch (err) {
+    res.status(500).send("Internal server error.");
+  }
+});
+
+
+
+
+//delete attendance
+router.delete("/students/delete-attendance/:id", async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const result = await Attendance.findByIdAndDelete(_id);
+    if (!result) {
+      return res.status(404).send("User not found.");
+    } else {
+      res.status(200).send("Deleted Successfully.");
+    }
+  } catch (err) {
+    res.status(500).send("Internal server error.");
   }
 });
 
